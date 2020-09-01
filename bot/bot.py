@@ -22,7 +22,8 @@ L = instaloader.Instaloader(download_comments=False, max_connection_attempts=9, 
 -Dar ultimas noticias de videojuegos(LISTO)
 -Dar ultimas noticias de colombia y/o el mundo (instaloader)(LISTO)
 -solicitar contraseña para informacion delicada
--No funciona el clima"""
+-No funciona el clima
+-instalar todas las liberias que se utiliza con pipenv y crear otro proyecto de heroku"""
 
 
 TOKEN = os.getenv("TOKEN")
