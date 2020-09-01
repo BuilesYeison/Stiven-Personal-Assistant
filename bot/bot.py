@@ -127,7 +127,7 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
                     try:
                         with open(postUsernames[index]+'/'+postShortcodes[index]+'.mp4', 'rb') as f:#get the downloaded post in the getPosts() method
                             bot.send_video(chat_id=chatId, video=f)
-                            if postCaption[index] == None: #if the post has not description
+                            if postCaptions[index] == None: #if the post has not description
                                 bot.sendMessage(chat_id=chatId, parse_mode='HTML', text=f'<b>{postUsernames[index]}:</b> None')
                             else: #send message with post description
                                 bot.sendMessage(chat_id=chatId, parse_mode='HTML', text=f'<b>{postUsernames[index]}:</b> {postCaptions[index]}')
@@ -158,7 +158,7 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
                 try:
                     with open(postUsernames[index]+'/'+postShortcodes[index]+'.mp4', 'rb') as f:
                         bot.send_video(chat_id=chatId, video=f)
-                        if postCaption[index] == None: #if the post has no description
+                        if postCaptions[index] == None: #if the post has no description
                             bot.sendMessage(chat_id=chatId, parse_mode='HTML', text=f'<b>{postUsernames[index]}:</b> None')
                         else: #send message with post description
                             bot.sendMessage(chat_id=chatId, parse_mode='HTML', text=f'<b>{postUsernames[index]}:</b> {postCaptions[index]}')

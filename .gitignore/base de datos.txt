@@ -1,0 +1,8 @@
+tabla: tblUniversidad
+columnas: idClase varchar(5),nombreClase varchar(20), diasClase varchar(20), horaClase varchar(15), linkClase varchar(30)
+
+tabla: tblIdeas
+columnas: idIdea varchar(5), nombreIdea varchar(30), descIdea varchar(200)
+
+tabla: tblTareas
+columnas: idTarea varchar(5), nombreTarea varchar(30), descTarea varchar(200)

@@ -60,8 +60,8 @@ def findJobs(keyword): #web scrapping a pagina de trabajo con palabra clave que 
     keyword = keyword.lower()
     keyword = keyword.replace(" ", "-")
     url = f"https://www.computrabajo.com.co/trabajo-de-{keyword}-en-antioquia?q={keyword}"
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content,"html.parser")
+    page = requests.get(url) #get all page info
+    soup = BeautifulSoup(page.content,"html.parser")#get page content in html
 
     results = soup.find_all("a", class_="js-o-link")
     for result in results:
