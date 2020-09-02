@@ -82,4 +82,30 @@ def findJobs(keyword): #web scrapping a pagina de trabajo con palabra clave que 
         workSites.append(result.text)
 
     return listJobsTittles, hyperlinks, companies, publishTimes, workSites
+
+def shopping(keyword):
+    #amazon no deja automatizar sin permiso ajajaj
+    itemImg = []
+    itemTitle = []
+    itemPrice = []
+    itemLink = []
+
+    keyword = keyword.lower()
+    keyword = keyword.replace(" ", "+")
+    url = f"https://www.amazon.com/s?k={keyword}&__mk_es_US=ÅMÅŽÕÑ&ref=nb_sb_noss"
+    #url = "https://www.clima.com/colombia/antioquia/medellin"
+    page = requests.get(url)
+    print(page)
+    soup = BeautifulSoup(page.content, "html.parser")
+    print(soup)
+
+    results = soup.find_all("p", class_="a-link-normal a-text-normal")
+    for result in results:
+        print(result.text)
+        
+    print(itemLink)
+
+
+
+
     

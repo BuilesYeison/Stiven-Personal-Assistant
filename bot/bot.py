@@ -23,7 +23,9 @@ L = instaloader.Instaloader(download_comments=False, max_connection_attempts=9, 
 -Dar ultimas noticias de colombia y/o el mundo (instaloader)(LISTO)
 -solicitar contraseña para informacion delicada
 -No funciona el clima
--instalar todas las liberias que se utiliza con pipenv y crear otro proyecto de heroku"""
+-instalar todas las liberias que se utiliza con pipenv y crear otro proyecto de heroku(LISTO)
+-cambiar la funcionalidad de noticias para que no sea por hora (LISTO)
+-enviar correos desde el bot"""
 
 
 TOKEN = os.getenv("TOKEN")
@@ -34,9 +36,7 @@ def ping(update, context):
     logger.info(f"El bot funciona!!")
     bot.sendMessage(chat_id=chatId, text="pong")
 
-def getPosts(theme):# get posts using instaloader from keyword 'theme'
-    date = datetime.now() 
-    now = datetime(date.year,date.month,date.day) #get actual time
+def getPosts(theme):# get posts using instaloader from keyword 'theme'    
     isVideo = []
     postUsernames = []
     postShortcodes = []
@@ -49,30 +49,27 @@ def getPosts(theme):# get posts using instaloader from keyword 'theme'
 
     try:
         for PROFILE in PROFILES:
-            logger.info(f'Profile = {PROFILE}')
-            time.sleep(2)
+            logger.info(f'Profile = {PROFILE}')            
             profile = instaloader.Profile.from_username(L.context, PROFILE) #connect with profile
             logger.info('Profile loaded')
             count = 0
             for post in profile.get_posts():
-                count += 1
-                if post.date >= now: #publish time is today
-                    time.sleep(2)
-                    download = L.download_post(post, PROFILE)#download post
-                    logger.info('Download complete')
-                    if download is True:
-                        video = post.is_video #verify if is a video
-                        postUsernames.append(post.owner_username) #get post values
-                        postShortcodes.append(post.shortcode)
-                        postCaptions.append(post.caption)
-                        if video is True:
-                            isVideo.append(True)                                                        
-                        else:
-                            isVideo.append(False)                          
+                count += 1                                
+                download = L.download_post(post, PROFILE)#download post
+                logger.info('Download complete')
+                if download is True:
+                    video = post.is_video #verify if is a video
+                    postUsernames.append(post.owner_username) #get post values
+                    postShortcodes.append(post.shortcode)
+                    postCaptions.append(post.caption)
+                    if video is True:
+                        isVideo.append(True)                                                        
+                    else:
+                        isVideo.append(False)                          
                                                                                         
-                if count == 1:
+                if count == 2: #get the last two posts
                     break
-            logger.info('Next profile')
+        logger.info('Next profile')
     except:
         pass
 
