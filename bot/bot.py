@@ -7,6 +7,7 @@ from telegram.ext import CommandHandler, Updater, MessageHandler, Filters
 from answers import greetAnswers, thanksAnswers, pleaseAnswers
 from webScrapping import weather, findJobs
 import instaloader
+from getDB import *
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s," 
@@ -17,15 +18,17 @@ L = instaloader.Instaloader(download_comments=False, max_connection_attempts=9, 
 
 """Agregar:
 -Buscar empleos en computrabajo y devolver link (LISTO)
--Crear base de datos con una tabla que tenga el horario de este semestre
--Crear tabla en la base de datos donde pueda agregar recordatorios con fecha, la descripcion de la actividad, tipo de actividad
+-Crear base de datos con una tabla que tenga el horario de este semestre(Listo)
+-Crear tabla en la base de datos donde pueda agregar recordatorios con fecha, la descripcion de la actividad, tipo de actividad(Listo)
 -Dar ultimas noticias de videojuegos(LISTO)
 -Dar ultimas noticias de colombia y/o el mundo (instaloader)(LISTO)
 -solicitar contraseña para informacion delicada
 -No funciona el clima
 -instalar todas las liberias que se utiliza con pipenv y crear otro proyecto de heroku(LISTO)
 -cambiar la funcionalidad de noticias para que no sea por hora (LISTO)
--enviar correos desde el bot"""
+-enviar correos desde el bot
+-Agregar funcionalidades con la base de datos, hacer pruebas con el bot desmontado en heroku y la db en localhost
+-subir la db a la nube a algun servicio gratuito"""
 
 
 TOKEN = os.getenv("TOKEN")
@@ -174,6 +177,31 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
                     pass
             
             time.sleep(2)
+
+    if "uni" in text:
+        meetings = getUniMeetings() #get the tuple with of each meet list
+        bot.sendMessage(chat_id=chatId, text="Aqui esta tu horario de universidad:")
+        for meet in meetings:
+            bot.sendMessage(chat_id=chatId, parse_mode="HTML", text=f"<b>Clase:</b> {meet[1]}\n<b>Dias/horario:</b> {meet[2]}/{meet[3]}\n<b>Link clase</b> {meet[4]}")
+
+    if "elimina" and "tarea" in text:
+        pass
+
+    if "elimina" and "idea" in text:
+        pass
+
+    if "nueva" and "tarea" in text:
+        pass
+
+    if "nueva" and "idea" in text:
+        pass
+
+    if "ver" and "tarea" in text:
+        pass
+
+    if "ver" and "idea" in text:
+        pass
+
     
 if __name__ == "__main__":
     mybot = telegram.Bot(token=TOKEN)

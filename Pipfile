@@ -10,6 +10,7 @@ python-telegram-bot = "*"
 requests = "*"
 beautifulsoup4 = "*"
 instaloader = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.8"

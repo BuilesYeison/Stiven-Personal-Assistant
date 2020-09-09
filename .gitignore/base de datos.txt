@@ -4,5 +4,5 @@ columnas: idClase varchar(5),nombreClase varchar(20), diasClase varchar(20), hor
 tabla: tblIdeas
 columnas: idIdea varchar(5), nombreIdea varchar(30), descIdea varchar(200)
 
-tabla: tblTareas
-columnas: idTarea varchar(5), nombreTarea varchar(30), descTarea varchar(200)
+tabla: tblTasks
+columnas: idTask varchar(5), nombreTask varchar(30), descTask varchar(200)
