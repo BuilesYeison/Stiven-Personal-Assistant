@@ -1,10 +1,14 @@
 import pymysql
 import random
+import os
+
+passw = os.getenv("PASS")
 
 connection = pymysql.connect( #data base connection
-    host='localhost',
-    user='root',
-    password='',db='stivendb'
+    host='b1qeampigy4khfapq7jn-mysql.services.clever-cloud.com',
+    user='uxmwfsbetbqwifuq',
+    password=passw,
+    db='b1qeampigy4khfapq7jn'
 )
 
 cursor = connection.cursor()
@@ -43,8 +47,7 @@ def getIdeas(id):
         try:
             cursor.execute(sql)
             ideas = cursor.fetchall()
-            for idea in ideas:
-                print(idea, "\n")
+            return ideas
         except:
             pass
     else: #entered an id
@@ -52,13 +55,13 @@ def getIdeas(id):
         try:
             cursor.execute(sql)
             idea = cursor.fetchone() #get the only one result  
-            print(idea)       
+            return idea
         except:
             pass
 
-def insertTask(task, taskIdea):
+def insertTask(task, descTask):
     id = str(random.choice(range(999)))
-    sql = f"INSERT INTO tbltasks VALUES ('{id}','{task}', '{taskIdea}')"
+    sql = f"INSERT INTO tbltasks VALUES ('{id}','{task}', '{descTask}')"
     try:
         cursor.execute(sql)
         connection.commit()
@@ -66,12 +69,12 @@ def insertTask(task, taskIdea):
         print(e)
     
 def deleteTask(id):
-    sql = f"DELETE FROM tbltasks WHERE idIdea = '{id}'"
+    sql = f"DELETE FROM tbltasks WHERE idTask = '{id}'"
     try:
         cursor.execute(sql)
         connection.commit()
     except Exception as e:
-        print(e)
+        pass
 
 
 def getTasks(id):
@@ -80,33 +83,18 @@ def getTasks(id):
         try:
             cursor.execute(sql)
             tasks = cursor.fetchall()
-            for task in tasks:
-                print(task, "\n")
+            return tasks
         except:
             pass
     else:
         sql = f"SELECT * FROM tbltasks WHERE idTask = '{id}'"
         try:
             cursor.execute(sql)
-            task = cursor.fetchone()  
-            print(task)       
+            task = cursor.fetchone()             
+            return task     
         except:
             pass
 
-#insertTask("Comprar mercado", "donde el cuchito")
-# try:
-#     st = "tareas"
-#     st= st.split("'")
-#     print(len(st))
-#     if len(st) == 1:
-#         id= None
-#     else:
-#         id = st[1]
-# except Exception as e:
-#     print(e)
-
-
-    
 
 
 

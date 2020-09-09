@@ -27,7 +27,7 @@ L = instaloader.Instaloader(download_comments=False, max_connection_attempts=9, 
 -instalar todas las liberias que se utiliza con pipenv y crear otro proyecto de heroku(LISTO)
 -cambiar la funcionalidad de noticias para que no sea por hora (LISTO)
 -enviar correos desde el bot
--Agregar funcionalidades con la base de datos, hacer pruebas con el bot desmontado en heroku y la db en localhost
+-Agregar funcionalidades con la base de datos, hacer pruebas con el bot desmontado en heroku y la db en localhost (listo)
 -subir la db a la nube a algun servicio gratuito"""
 
 
@@ -78,6 +78,16 @@ def getPosts(theme):# get posts using instaloader from keyword 'theme'
 
     return isVideo, postUsernames, postShortcodes, postCaptions #send listo with of all of posts info found
 
+def getId(text):
+    #user send the keyword with the id in '', in thi method ill get that id
+    text = text.replace(" ", "")
+    text = text.split(",")    
+    if len(text) == 1:
+        id = None
+    else:
+        id = text[1]
+
+    return id
 
 def echo(update, context): #obtener el mensaje que envio el usuario e identificar palabra clave para responderle con lo que solicita   
     bot = context.bot
@@ -108,17 +118,17 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
 
     if "trabajo" in text:        
         try:
-            text = text.split("'") #split the sentence and get the desired work for look
+            text = text.split(",") #split the sentence and get the desired work for look
             text = text[1] #get desired work into ' '
-            listJobsTittles, hyperlinks, companies, publishTimes, workSites = findJobs(text) #get lists with jobs info about the desired work
+            listJobsTittles, hyperlinks, companies, publishTimes, workSites = findJobs(text) #get lists with jobs info about the desired work            
             bot.sendMessage(chat_id=chatId, parse_mode= "HTML", text="<b>Aqui estan algunas de las ofertas que pude encontrar:</b>")
             for index in range(len(listJobsTittles)): #get index from all of jobs found
                 time.sleep(2)#wait 2 seconds for each job info
-                bot.sendMessage(chat_id=chatId,parse_mode="HTML", text=f"<b>Empleo:</b> {listJobsTittles[index]}\n<b>Empresa:</b> {companies[index]}\n<b>Lugar:</b> {workSites[index]}\n<b>Fecha de publicación:</b> {publishTimes[index]}\n\n<b>Link:</b> {hyperlinks[index]}")  
-        except:
-            bot.sendMessage(chat_id=chatId, text="Lo siento por ahora esta funcion no funciona :C")
+                bot.sendMessage(chat_id=chatId,parse_mode="HTML", text=f"<b>Empleo:</b> {listJobsTittles[index]}\n<b>Empresa:</b> {companies[index]}\n<b>Lugar:</b> workSites[index]\n<b>Fecha de publicación:</b> {publishTimes[index]}\n\n<b>Link:</b> {hyperlinks[index]}")  
+        except Exception as e:
+            bot.sendMessage(chat_id=chatId, text=f"{e} Lo siento por ahora esta funcion no funciona :C")
 
-    if "noticia" and 'juego' in text:
+    if "noticia" in text and 'juego' in text:
         answer = pleaseAnswers()
         bot.sendMessage(chat_id=chatId, text=answer)#send message before of collect posts
         try:
@@ -149,7 +159,7 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
         except:
             bot.sendMessage(chat_id=chatId, text="No esta disponible esta funcion")
         
-    if "noticia" and "pais" in text: #get news about Colombia
+    if "noticia" in text and "pais" in text: #get news about Colombia
         #meter todo en try
         answer = pleaseAnswers()
         bot.sendMessage(chat_id=chatId, text=answer)#send message before of collect posts
@@ -184,23 +194,59 @@ def echo(update, context): #obtener el mensaje que envio el usuario e identifica
         for meet in meetings:
             bot.sendMessage(chat_id=chatId, parse_mode="HTML", text=f"<b>Clase:</b> {meet[1]}\n<b>Dias/horario:</b> {meet[2]}/{meet[3]}\n<b>Link clase</b> {meet[4]}")
 
-    if "elimina" and "tarea" in text:
-        pass
+    if "elimina" in text and "tarea" in text:
+        id = getId(text)
+        if id is None:
+            bot.sendMessage(chat_id=chatId, text="No ingresaste el codigo de la tarea a borrar")
+        else:
+            bot.sendMessage(chat_id=chatId, text="Verifica que el id haya sido correcto. Eliminacion en proceso")            
+            deleteTask(id)            
+            
+    if "elimina" in text and "idea" in text:
+        id = getId(text)
+        if id is None:
+            bot.sendMessage(chat_id=chatId, text="No ingresaste el codigo de la idea a borrar")
+        else:
+            bot.sendMessage(chat_id=chatId, text="Verifica que el id haya sido correcto. Eliminacion en proceso")            
+            deleteIdea(id)  
 
-    if "elimina" and "idea" in text:
-        pass
+    if "nueva" in text and "tarea" in text:
+        text = text.split(",")
+        if len(text) != 1:
+            insertTask(text[1], text[2])
+            bot.sendMessage(chat_id=chatId, text="Se ha agregado la tarea correctamente")
+        else:
+            bot.sendMessage(chat_id=chatId, text="No has ingresado correctamente el nombre y la descripcion.")
 
-    if "nueva" and "tarea" in text:
-        pass
+    if "nueva" in text and "idea" in text:
+        text = text.split(",")
+        if len(text) != 1:
+            insertIdea(text[1], text[2])
+            bot.sendMessage(chat_id=chatId, text="Se ha agregado la idea correctamente")
+        else:
+            bot.sendMessage(chat_id=chatId, text="No has ingresado correctamente el nombre y la descripcion.")
 
-    if "nueva" and "idea" in text:
-        pass
+    if "ver" in text and "tarea" in text:
+        id = getId(text)
+        tasks = getTasks(id)
 
-    if "ver" and "tarea" in text:
-        pass
+        if id is None:
+            bot.sendMessage(chat_id=chatId, text=f"Aqui estan las tareas:")
+            for task in tasks:
+                bot.sendMessage(chat_id=chatId, parse_mode= "HTML", text=f"<b>id:</b> {task[0]}\n<b>Tarea:</b> {task[1]}")
+        else:
+            bot.sendMessage(chat_id=chatId, parse_mode="HTML", text=f"<b>Aqui esta la tarea:</b>\n\n<b>Tarea:</b> {tasks[1]}\n<b>Descripción:</b> {tasks[2]}")
 
-    if "ver" and "idea" in text:
-        pass
+    if "ver" in text and "idea" in text:
+        id = getId(text)
+        ideas = getIdeas(id)
+
+        if id is None:
+            bot.sendMessage(chat_id=chatId, text=f"Aqui estan las ideas:")
+            for idea in ideas:
+                bot.sendMessage(chat_id=chatId, parse_mode= "HTML", text=f"<b>id:</b> {idea[0]}\n<b>Tarea:</b> {idea[1]}")
+        else:
+            bot.sendMessage(chat_id=chatId, parse_mode="HTML", text=f"<b>Aqui esta la tarea:</b>\n\n<b>Tarea:</b> {ideas[1]}\n<b>Descripción:</b> {ideas[2]}")
 
     
 if __name__ == "__main__":
